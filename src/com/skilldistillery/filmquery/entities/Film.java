@@ -19,14 +19,16 @@ public class Film {
 	private String specialFeatures;
 	private List<Actor> actors;
 	private String language_name;
+	
 	public Film() {
 		
 	}
 	
-	public Film(String title2, Integer releaseYear2, String desc) {
-		this.title = title2;
-		this.releaseYear = releaseYear2;
+	public Film(String title, Integer releaseYear, String desc, String langName) {
+		this.title = title;
+		this.releaseYear = releaseYear;
 		this.description = desc;
+		this.language_name = langName;
 	}
 
 	public Film(int filmId, String title, String desc, Integer releaseYear, int langId, int rentDur, double rate,
@@ -172,9 +174,12 @@ public class Film {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("[Film]: ").append(title)
-		.append(" [Release Year]: ").append(releaseYear)
-		.append(" [Film Description]: ").append(description);
+		sb.append("Film: ").append(title)
+		.append(" | Release Year: ").append(releaseYear)
+		.append(" | Film Description: ").append(description)
+		.append(" | Language: ").append(language_name)
+		.append(" | Actors: ").append(actors);
+		
 		return sb.toString();
 	}
 

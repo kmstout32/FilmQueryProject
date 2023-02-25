@@ -178,7 +178,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		try {
 			Connection conn = DriverManager.getConnection(URL, user, pass);
-			String sql = "SELECT title, release_year, description FROM film WHERE id = ?";
+			String sql = "SELECT film.*, lang.name FROM film JOIN language lang "
+					+ "ON lang.id = film.language_id WHERE film.id = ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmId);
 
@@ -189,6 +190,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setTitle(rs.getString("title"));
 				film.setReleaseYear(rs.getInt("release_year"));
 				film.setDescription(rs.getString("description"));
+				film.setLanguage_name(rs.getString("name"));
 			}
 			rs.close();
 			stmt.close();
@@ -205,8 +207,12 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	@Override
 	public List<Film> searchFilmByKeyWord(String keyword) {
 		List<Film> films = new ArrayList<>();
+		List<Actor> actors;
 		
-		String sql = "SELECT title ,description FROM film WHERE title LIKE ? OR  description LIKE ?";
+		String sql = "SELECT film.*, lang.name "
+				+ "FROM film JOIN language lang "
+				+ "ON lang.id = film.language_id "
+				+ "WHERE title LIKE ? OR  description LIKE ?";
 		try {
 			Connection conn;
 			conn = DriverManager.getConnection(URL, user, pass);
@@ -217,10 +223,18 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			
 			while (rs.next()) {
 				String title = rs.getString("title");
-				
+				Integer releaseYear = rs.getInt("release_year");
 				String desc = rs.getString("description");
-				Film film = new Film(title, desc);
+				String lang = rs.getString("name");
+				Integer id = rs.getInt("id");
+				
+				Film film = new Film( title,releaseYear, desc, lang);
+				film.setId(id);
 				films.add(film);
+				actors = findActorsByFilmId(film.getId());
+				film.setActors(actors);
+				
+				
 				
 			}
 			rs.close();
