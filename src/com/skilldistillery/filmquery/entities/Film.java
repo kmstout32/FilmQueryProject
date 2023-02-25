@@ -18,9 +18,15 @@ public class Film {
 	private String rating;
 	private String specialFeatures;
 	private List<Actor> actors;
-
+	private String language_name;
 	public Film() {
-		// TODO Auto-generated constructor stub
+		
+	}
+	
+	public Film(String title2, Integer releaseYear2, String desc) {
+		this.title = title2;
+		this.releaseYear = releaseYear2;
+		this.description = desc;
 	}
 
 	public Film(int filmId, String title, String desc, Integer releaseYear, int langId, int rentDur, double rate,
@@ -36,6 +42,7 @@ public class Film {
 		this.replacementCost = repCost;
 		this.rating = rating;
 		this.specialFeatures = features;
+		
 	}
 
 	public Film(int filmId, String title, String desc, Integer releaseYear, int langId, int rentDur, double rate,
@@ -52,6 +59,11 @@ public class Film {
 		this.rating = rating;
 		this.specialFeatures = features;
 		this.actors = actors;
+	}
+
+	public Film(String title, String desc) {
+		this.title = title;
+		this.description = desc;
 	}
 
 	public int getId() {
@@ -145,16 +157,25 @@ public class Film {
 	public void setActors(List<Actor> actors) {
 		this.actors = actors;
 	}
-
+// TEST toString
+//	@Override
+//	public String toString() {
+//		StringBuilder builder = new StringBuilder();
+//		builder.append("Film [id=").append(id).append(", title=").append(title).append(", description=")
+//				.append(description).append(", releaseYear=").append(releaseYear).append(", language=").append(language)
+//				.append(", rentalDuration=").append(rentalDuration).append(", length=").append(length)
+//				.append(", replacementCost=").append(replacementCost).append(", rating=").append(rating)
+//				.append(", specialFeatures=").append(specialFeatures).append("]");
+//		return builder.toString();
+//	}
+//APP toString 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Film [id=").append(id).append(", title=").append(title).append(", description=")
-				.append(description).append(", releaseYear=").append(releaseYear).append(", language=").append(language)
-				.append(", rentalDuration=").append(rentalDuration).append(", length=").append(length)
-				.append(", replacementCost=").append(replacementCost).append(", rating=").append(rating)
-				.append(", specialFeatures=").append(specialFeatures).append("]");
-		return builder.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append("[Film]: ").append(title)
+		.append(" [Release Year]: ").append(releaseYear)
+		.append(" [Film Description]: ").append(description);
+		return sb.toString();
 	}
 
 	@Override
@@ -177,6 +198,14 @@ public class Film {
 				&& Objects.equals(releaseYear, other.releaseYear) && rentalDuration == other.rentalDuration
 				&& Double.doubleToLongBits(replacementCost) == Double.doubleToLongBits(other.replacementCost)
 				&& Objects.equals(specialFeatures, other.specialFeatures) && Objects.equals(title, other.title);
+	}
+
+	public String getLanguage_name() {
+		return language_name;
+	}
+
+	public void setLanguage_name(String language_name) {
+		this.language_name = language_name;
 	}
 
 }
