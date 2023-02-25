@@ -45,7 +45,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				actor.setId(actorResult.getInt(1));
 				actor.setFirstName(actorResult.getString(2));
 				actor.setLastName(actorResult.getString(3));
-				actor.setFilms(findFilmsByActorId(actorId)); // An Actor has Films
+				actor.setFilms(findFilmByActorId(actorId)); // An Actor has Films
 			}
 			// ...
 			return actor;
@@ -75,7 +75,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			film.setId(filmResult.getInt("id"));
 			film.setTitle(filmResult.getString("title"));
 			film.setDescription(filmResult.getString("description"));
-			film.setReleaseYear(filmResult.getInt("realease_year"));
+			film.setReleaseYear(filmResult.getInt("release_year"));
 			film.setLanguage(filmResult.getInt("language_id"));
 			film.setRentalDuration(filmResult.getInt("rental_duration"));
 			film.setRate(filmResult.getDouble("rental_rate"));
@@ -90,7 +90,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 	}
 
-	public List<Film> findFilmsByActorId(int actorId) {
+	@Override
+	public List<Film> findFilmByActorId(int actorId) {
 		List<Film> films = new ArrayList<>();
 
 		try {
@@ -104,17 +105,17 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				int filmId = rs.getInt("id");
+				Integer filmId = rs.getInt("id");
 				String title = rs.getString("title");
 				String desc = rs.getString("description");
 				Integer releaseYear = rs.getInt("release_year");
-				int langId = rs.getInt("language_id");
-				int rentDur = rs.getInt("rental_duration");
-				double rate = rs.getDouble("rental_rate");
+				Integer langId = rs.getInt("language_id");
+				Integer rentDur = rs.getInt("rental_duration");
+				Double rate = rs.getDouble("rental_rate");
 				Integer length = rs.getInt("length");
-				double repCost = rs.getDouble("replacement_cost");
-				String rating = rs.getString(10);
-				String features = rs.getString(11);
+				Double repCost = rs.getDouble("replacement_cost");
+				String rating = rs.getString("rating");
+				String features = rs.getString("special_features");
 				Film film = new Film(filmId, title, desc, releaseYear, langId, rentDur, rate, length, repCost, rating,
 						features);
 				films.add(film);
@@ -126,30 +127,40 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			e.printStackTrace();
 		}
 		return films;
+		
 	}
 
 	@Override
 	public List<Actor> findActorsByFilmId(int filmId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<Actor> actors = new ArrayList<>();
+
+		try {
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+			String sql = "SELECT * FROM actor JOIN film_actor ON actor.id = film_actor.actor_id\n"
+					+ "JOIN film ON film_actor.film_id = film.id\n WHERE film.id = ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Integer id = rs.getInt("id");
+				String firstName = rs.getString("first_name");
+				String lastName = rs.getString("last_name");
+				Actor actor = new Actor(id, firstName, lastName);
+				actors.add(actor);
+			}
+			rs.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return actors;
+
 	}
 
-	@Override
-	public List<Film> findFilmByActorId(int filmId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-//	@Override
-//	public List<Actor> findActorsByFilmId(int filmId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public List<Film> findFilmByActorId(int filmId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 }
